@@ -1,4 +1,4 @@
-# 🏗 Scaffold-ETH
+# 🏗 Scaffold-ETH-BarDice
 
 > everything you need to build on Ethereum! 🚀
 
