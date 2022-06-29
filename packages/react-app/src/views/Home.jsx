@@ -1,7 +1,11 @@
 import { useContractReader } from "eth-hooks";
 import { ethers } from "ethers";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import {Button} from "antd";
+import { utils } from "ethers";
+
+
 
 /**
  * web3 props can be passed from '../App.jsx' into your local view component for use
@@ -9,20 +13,46 @@ import { Link } from "react-router-dom";
  * @param {*} readContracts contracts from current chain already pre-loaded using ethers contract module. More here https://docs.ethers.io/v5/api/contract/contract/
  * @returns react component
  **/
-function Home({ yourLocalBalance, readContracts }) {
+function Home({ yourLocalBalance, readContracts, tx, writeContracts }) {
   // you can also use hooks locally in your component of choice
   // in this case, let's keep track of 'purpose' variable from our contract
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+  const player = useContractReader(readContracts, "YourContract", "player");
 
   return (
     <div>
+      Hello {player}
+      <div>
+        <Button
+              onClick={() => {
+                /*
+                you can also just craft a transaction and send it to the tx() transactor
+                here we are sending value straight to the contract's address:
+              */
+                tx({
+                  to: writeContracts.YourContract.address,
+                  value: utils.parseEther("0.01"),
+                });
+                /* this should throw an error about "no fallback nor receive function" until you add it */
+              }}
+            >
+            Play Game
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+export default Home;
+
+/***** 
+<div>
       <div style={{ margin: 32 }}>
         <span style={{ marginRight: 8 }}>📝</span>
         This Is Your App Home. You can start editing it in{" "}
         <span
           className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
+          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9",padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+          >
           packages/react-app/src/views/Home.jsx
         </span>
       </div>
@@ -31,14 +61,14 @@ function Home({ yourLocalBalance, readContracts }) {
         Edit your smart contract{" "}
         <span
           className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9",padding: 4, borderRadius: 4, fontWeight: "bolder" }}
         >
           YourContract.sol
         </span>{" "}
         in{" "}
         <span
           className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}
         >
           packages/hardhat/contracts
         </span>
@@ -51,7 +81,7 @@ function Home({ yourLocalBalance, readContracts }) {
             className="highlight"
             style={{
               marginLeft: 4,
-              /* backgroundColor: "#f9f9f9", */ padding: 4,
+              /* backgroundColor: "#f9f9f9",  padding: 4,
               borderRadius: 4,
               fontWeight: "bolder",
             }}
@@ -63,7 +93,7 @@ function Home({ yourLocalBalance, readContracts }) {
             className="highlight"
             style={{
               marginLeft: 4,
-              /* backgroundColor: "#f9f9f9", */ padding: 4,
+              /* backgroundColor: "#f9f9f9",  padding: 4,
               borderRadius: 4,
               fontWeight: "bolder",
             }}
@@ -80,7 +110,7 @@ function Home({ yourLocalBalance, readContracts }) {
             className="highlight"
             style={{
               marginLeft: 4,
-              /* backgroundColor: "#f9f9f9", */ padding: 4,
+              /* backgroundColor: "#f9f9f9", padding: 4,
               borderRadius: 4,
               fontWeight: "bolder",
             }}
@@ -97,14 +127,14 @@ function Home({ yourLocalBalance, readContracts }) {
         passed into the
         <span
           className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9",  padding: 4, borderRadius: 4, fontWeight: "bolder" }}
         >
           Home.jsx
         </span>{" "}
         component from
         <span
           className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9",  padding: 4, borderRadius: 4, fontWeight: "bolder" }}
         >
           App.jsx
         </span>
@@ -118,7 +148,4 @@ function Home({ yourLocalBalance, readContracts }) {
         Tinker with your smart contract using the <Link to="/debug">"Debug Contract"</Link> tab.
       </div>
     </div>
-  );
-}
-
-export default Home;
+*/
