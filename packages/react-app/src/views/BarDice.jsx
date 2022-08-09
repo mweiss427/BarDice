@@ -2,32 +2,30 @@ import { Button, Card, DatePicker, Divider } from "antd";
 import React, { useState } from "react";
 import { ethers } from "ethers";
 import { useContractReader } from "eth-hooks";
-import ReactDice from 'react-dice-complete'
+import { Dice } from "../components"
 import 'react-dice-complete/dist/react-dice-complete.css'
 
-export default function ExampleUI({
+export default function BarDice({
   tx,
   readContracts,
   writeContracts,
 }) {
-  const [newPurpose, setNewPurpose] = useState("loading...");
   const player = useContractReader(readContracts, "YourContract", "player");
   const viewDice = useContractReader(readContracts, "YourContract", "viewDice");
   const viewCup = useContractReader(readContracts, "YourContract", "viewCup");
-  const dice1 = viewCup;
+  const rollCount = useContractReader(readContracts, "YourContract", "rollCount");
 
   return (
     <div>
       <div style={{ border: "1px solid #cccccc", padding: 16, width: 800, margin: "auto", marginTop: 64 }}>
         <h2>Bar Dice:</h2>
         <h4>Hello: {player}</h4>
+        <>rollCount: {rollCount}</>
         <Divider />
         <div style={{ margin: 8 }}>
           <Button
-            style={{ marginTop: 8 }}
+            style={{ marginTop: 8, color: "blue" }}
             onClick={async () => {
-              /* look how you call setPurpose on your contract: */
-              /* notice how you pass a call back for tx updates too */
               const result = tx(writeContracts.YourContract.loadCup({value: ethers.utils.parseEther(".01")}), update => {
                 console.log("📡 Transaction Update:", update);
                 if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -50,21 +48,10 @@ export default function ExampleUI({
             Play the game
           </Button>
         </div>
-        <div>
-          <ReactDice
-            numDice={5}
-            faceColor="teal"
-            dotColor = "Black"
-            defaultRoll = {dice1}
-            disableIndividual = {true}
-          />
-        </div>
-        <div>{
-          viewDice
-        }</div>
-        <div>{
-          console.log("HI " + viewCup)
-        }</div>
+        <Dice 
+          dice={viewDice}
+          cup={viewCup}
+        ></Dice>
         <div> <Button onClick={async () => {
           const result = tx(writeContracts.YourContract.rollDice(), update => {
                 console.log("📡 Transaction Update:", update);
@@ -89,9 +76,11 @@ export default function ExampleUI({
             onClick={async () => {
               /* look how you call setPurpose on your contract: */
               /* notice how you pass a call back for tx updates too */
+              
               const result = tx(writeContracts.YourContract.farm(0), update => {
                 console.log("📡 Transaction Update:", update);
                 if (update && (update.status === "confirmed" || update.status === 1)) {
+                  
                   console.log(" 🍾 Transaction " + update.hash + " finished!");
                   console.log(
                     " ⛽️ " +
