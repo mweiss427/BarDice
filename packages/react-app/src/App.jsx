@@ -29,8 +29,9 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, BarDice, Hints, Subgraph } from "./views";
+import { Home, BarDice } from "./views";
 import { useStaticJsonRPC } from "./hooks";
+import { Debug } from './components';
 
 const { ethers } = require("ethers");
 /*
@@ -300,20 +301,13 @@ function App(props) {
           <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
         </Route>
         <Route exact path="/debug">
-          {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
-
-          <Contract
-            name="YourContract"
-            price={price}
-            signer={userSigner}
-            provider={localProvider}
+          <Debug
+            localProvider={localProvider}
+            userSigner={userSigner}
             address={address}
             blockExplorer={blockExplorer}
             contractConfig={contractConfig}
+            localChainId={localChainId}
           />
         </Route>
         <Route path="/bardice">

@@ -67,6 +67,7 @@
     ]
   },
   "dependencies": {
+    "caniuse-lite": "^1.0.30001474",
     "react-dice-complete": "^1.2.1"
   },
   "devDependencies": {
