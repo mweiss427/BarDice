@@ -1,10 +1,8 @@
-// components/Dice.js
-
 import React, { useEffect, useState, useRef } from "react";
 import ReactDice from "react-dice-complete";
 import "react-dice-complete/dist/react-dice-complete.css";
 
-const Dice = ({ contract }) => {
+const Dice = ({ contract, isRolling }) => {
   const [diceValues, setDiceValues] = useState([]);
   const diceRef = useRef();
 
@@ -20,10 +18,10 @@ const Dice = ({ contract }) => {
   }, [contract]);
 
   useEffect(() => {
-    if (diceRef.current && diceValues.length) {
+    if (diceRef.current && diceValues.length > 0 && !isRolling) {
       diceRef.current.rollAll(diceValues);
     }
-  }, [diceValues]);
+  }, [diceValues, isRolling]);
 
   const handleDiceRoll = (total, individualValues) => {
     console.log(`Total: ${total}, Individual values: ${individualValues}`);

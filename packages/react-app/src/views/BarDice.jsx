@@ -1,3 +1,5 @@
+// BarDice.jsx
+
 import { Button, Divider } from "antd";
 import React, { useState } from "react";
 import { ethers } from "ethers";
@@ -10,6 +12,8 @@ export default function BarDice({ tx, readContracts, writeContracts }) {
   const viewDice = useContractReader(readContracts, "TheBar", "viewDice");
   const viewCup = useContractReader(readContracts, "TheBar", "viewCup");
   const rollCount = useContractReader(readContracts, "TheBar", "rollCount");
+  const [isRolling, setIsRolling] = useState(false);
+
 
   const handleButtonClick = async (method, ...args) => {
     const result = tx(writeContracts.TheBar[method](...args), (update) => {
@@ -29,6 +33,24 @@ export default function BarDice({ tx, readContracts, writeContracts }) {
     });
     console.log("awaiting metamask/web3 confirm result...", result);
     console.log(await result);
+  };
+
+  const getHoldButtonStyle = (index) => {
+    if (viewCup && !viewCup[index]) {
+      return { marginTop: 8, backgroundColor: "green" };
+    }
+    return { marginTop: 8 };
+  };
+
+  const rollTheDice = async () => {
+    // Set isRolling to true
+    setIsRolling(true);
+  
+    // Call the rollDice function
+    await handleButtonClick("rollDice");
+  
+    // Set isRolling back to false
+    setIsRolling(false);
   };
 
   return (
@@ -62,16 +84,16 @@ export default function BarDice({ tx, readContracts, writeContracts }) {
         </div>
         
         <div>
-          <Button onClick={() => handleButtonClick("rollDice")}>
+          <Button onClick={() => rollTheDice()}>
             Roll the dice!
           </Button>
         </div>
-        <Dice contract={readContracts.TheBar} />
+        <Dice contract={readContracts.TheBar} isRolling={isRolling} viewCup={viewCup}/>
         <div>
           {[0, 1, 2, 3, 4].map((i) => (
             <Button
               key={i}
-              style={{ marginTop: 8 }}
+              style={getHoldButtonStyle(i)}
               onClick={() => handleButtonClick("farm", i)}
             >
               Hold dice
