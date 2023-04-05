@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { ethers } from "ethers";
 import { useContractReader } from "eth-hooks";
 import "react-dice-complete/dist/react-dice-complete.css";
+import Dice from "../components/Dice";
 
 export default function BarDice({ tx, readContracts, writeContracts }) {
   const player = useContractReader(readContracts, "TheBar", "player");
@@ -43,7 +44,9 @@ export default function BarDice({ tx, readContracts, writeContracts }) {
       >
         <h2>Bar Dice:</h2>
         <h4>Hello: {player}</h4>
-        <>rollCount: {rollCount}</>
+        <>
+          rollCount: {rollCount}
+        </>
         <Divider />
         <div style={{ margin: 8 }}>
           <Button
@@ -63,6 +66,7 @@ export default function BarDice({ tx, readContracts, writeContracts }) {
             Roll the dice!
           </Button>
         </div>
+        <Dice contract={readContracts.TheBar} />
         <div>
           {[0, 1, 2, 3, 4].map((i) => (
             <Button
