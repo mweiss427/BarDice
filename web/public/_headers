@@ -1,0 +1,10 @@
+# Security headers for static hosts that read _headers (Cloudflare Pages, Netlify).
+# The full script/connect CSP is injected into index.html at build time (see vite.config.ts).
+/*
+  Content-Security-Policy: frame-ancestors 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  Cross-Origin-Opener-Policy: same-origin
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload

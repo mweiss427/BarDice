@@ -1,0 +1,7 @@
+{
+  "filter_paths": "node_modules|contracts/test|test/",
+  "exclude_dependencies": true,
+  "detectors_to_exclude": "naming-convention,timestamp,solc-version,pragma,dead-code,unindexed-event-address",
+  "solc_remaps": "@openzeppelin/=node_modules/@openzeppelin/",
+  "fail_on": "low"
+}

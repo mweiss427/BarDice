@@ -1,0 +1,8 @@
+artifacts/
+cache/
+coverage/
+deployments/localhost.json
+ignition/deployments/chain-31337/
+ignition/parameters/*.json
+!ignition/parameters/*.example.json
+hardhat.sandbox.config.ts

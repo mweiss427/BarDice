@@ -1,0 +1,14 @@
+packages:
+  - contracts
+  - web
+
+# Supply-chain hardening
+# - Refuse to install any package version published less than 3 days ago
+#   (most malicious npm releases are detected and pulled within hours).
+minimumReleaseAge: 4320
+# - Dependency install scripts are blocked by default in pnpm 10; only these may run.
+onlyBuiltDependencies:
+  - esbuild
+# - Never let a transitive dependency silently pull code from a git URL / tarball.
+blockExoticSubdeps: true
+strictPeerDependencies: false

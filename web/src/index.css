@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    @apply bg-stone-950 text-stone-100 antialiased;
+    background-image: radial-gradient(circle at 50% 0%, rgb(120 53 15 / 0.35), transparent 60%);
+  }
+  code {
+    @apply rounded bg-stone-800 px-1;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply rounded-full bg-amber-400 px-5 py-2.5 font-semibold text-stone-950 shadow transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-secondary {
+    @apply rounded-full bg-stone-800 px-5 py-2.5 font-semibold text-stone-100 ring-1 ring-stone-600 transition hover:bg-stone-700 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+}

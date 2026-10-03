@@ -1,0 +1,20 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    # Let new releases age a week before proposing them (supply-chain safety).
+    cooldown:
+      default-days: 7
+    groups:
+      hardhat:
+        patterns: ["hardhat", "@nomicfoundation/*"]
+      wagmi-viem:
+        patterns: ["wagmi", "viem", "@tanstack/*"]
+      tooling:
+        patterns: ["vite", "vitest", "@vitejs/*", "typescript", "tailwindcss", "@tailwindcss/*", "@playwright/*", "@testing-library/*"]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

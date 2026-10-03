@@ -1,0 +1,14 @@
+{
+  "BarDice": {
+    "owner": "0xYOUR_SAFE_OR_OWNER_ADDRESS",
+    "charity": "0xYOUR_CHARITY_ADDRESS",
+    "entryFeeWei": "100000000000000000n",
+    "dayStartOffset": "21600n",
+    "vrfCoordinator": "0x_CHAINLINK_VRF_V2_5_COORDINATOR_FOR_BASE_SEPOLIA",
+    "vrfKeyHash": "0x_KEY_HASH_FROM_CHAINLINK_DOCS",
+    "vrfSubscriptionId": "0n",
+    "vrfRequestConfirmations": 3,
+    "vrfCallbackGasLimit": 300000,
+    "vrfNativePayment": false
+  }
+}

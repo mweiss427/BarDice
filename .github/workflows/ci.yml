@@ -1,0 +1,116 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+# Least privilege: CI only needs to read the repo.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  SOLC_VERSION: "0.8.30"
+
+jobs:
+  contracts:
+    name: Contracts (build, typecheck, unit + fuzz + invariant tests, coverage)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @bardice/contracts compile
+      - name: Generated ABI is committed and up to date
+        run: git diff --exit-code -- web/src/generated
+      - run: pnpm --filter @bardice/contracts lint
+      - run: pnpm --filter @bardice/contracts coverage
+
+  slither:
+    name: Slither static analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pnpm install --frozen-lockfile
+      - name: Install Slither and solc
+        run: |
+          pip install slither-analyzer==0.11.6 solc-select==1.1.0
+          solc-select install "$SOLC_VERSION"
+          solc-select use "$SOLC_VERSION"
+      - name: Slither (fails on any low+ finding)
+        working-directory: contracts
+        run: slither contracts/BarDice.sol --config-file slither.config.json
+
+  web:
+    name: Web (typecheck, unit tests, production build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @bardice/web lint
+      - run: pnpm --filter @bardice/web test
+      - run: pnpm --filter @bardice/web build
+
+  e2e:
+    name: End-to-end (real browser vs local chain)
+    runs-on: ubuntu-latest
+    needs: [contracts, web]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @bardice/contracts compile
+      - run: pnpm --filter @bardice/web exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: web/playwright-report
+          retention-days: 7
+
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - run: pnpm audit --prod --audit-level high
